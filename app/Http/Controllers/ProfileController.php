@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Profile;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -27,19 +29,54 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    // public function update(ProfileUpdateRequest $request): RedirectResponse
+    // {
+    //     $request->user()->fill($request->validated());
+
+    //     if ($request->user()->isDirty('email')) {
+    //         $request->user()->email_verified_at = null;
+    //     }
+
+    //     $request->user()->save();
+
+    //     return Redirect::route('profile.edit');
+    // }
+    public function update(Request $request, Profile $profile)
     {
-        $request->user()->fill($request->validated());
+        // Authorization check (optional)
+        $this->authorize('update', $profile);
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
+        $validated = $request->validate([
+            'bio' => 'nullable|string|max:1000',
+            'graduation_year' => 'required|integer|min:1900|max:2100',
+            'class_name' => 'nullable|string|max:100',
+            'quote' => 'nullable|string|max:255',
+            'interests' => 'nullable|array',
+        ]);
 
-        $request->user()->save();
+        $profile->update($validated);
 
-        return Redirect::route('profile.edit');
+        return redirect()->back()->with('success', 'Profile updated.');
     }
 
+    public function uploadAvatar(Request $request, Profile $profile)
+    {
+        $this->authorize('update', $profile);
+
+        $request->validate([
+            'avatar' => 'required|image|max:2048', // 2MB max
+        ]);
+
+        // Delete old avatar if exists
+        if ($profile->avatar) {
+            Storage::disk('public')->delete($profile->avatar);
+        }
+
+        $path = $request->file('avatar')->store('avatars', 'public');
+        $profile->update(['avatar' => $path]);
+
+        return redirect()->back()->with('success', 'Avatar updated.');
+    }
     /**
      * Delete the user's account.
      */
