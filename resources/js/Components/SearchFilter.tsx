@@ -4,7 +4,7 @@ import React from 'react';
 interface SearchFilterProps {
     searchTerm: string;
     onSearchChange: (term: string) => void;
-    filterYear?: number;
+    filterYear?: number | null;
     onFilterYearChange?: (year: number | null) => void;
     years: number[];
 }
