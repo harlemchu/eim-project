@@ -9,13 +9,13 @@ interface SearchFilterProps {
     years: number[];
 }
 
-const SearchFilter: React.FC<SearchFilterProps> = ({
+export default function SearchFilter({
     searchTerm,
     onSearchChange,
     filterYear,
     onFilterYearChange,
     years,
-}) => {
+}: SearchFilterProps) {
     return (
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <input
@@ -38,5 +38,3 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
         </div>
     );
 };
-
-export default SearchFilter;

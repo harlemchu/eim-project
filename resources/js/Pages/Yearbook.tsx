@@ -9,7 +9,7 @@ interface YearbookProps {
     profiles: Profile[];
 }
 
-const Yearbook: React.FC<YearbookProps> = ({ profiles }) => {
+export default function Yearbook({ profiles }: YearbookProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterYear, setFilterYear] = useState<number | null>(null);
 
@@ -56,6 +56,4 @@ const Yearbook: React.FC<YearbookProps> = ({ profiles }) => {
             </div>
         </>
     );
-};
-
-export default Yearbook;
+}

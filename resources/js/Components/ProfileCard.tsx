@@ -6,7 +6,8 @@ interface ProfileCardProps {
     profile: Profile;
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ profile }) => {
+// const ProfileCard: React.FC<ProfileCardProps> = ({ profile }) => {
+export default function ProfileCard({ profile }: ProfileCardProps) {
     const avatarUrl = profile.avatar
         ? `/storage/${profile.avatar}`
         : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.user?.name || '')}&background=random`;
@@ -44,5 +45,3 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile }) => {
         </div>
     );
 };
-
-export default ProfileCard;
