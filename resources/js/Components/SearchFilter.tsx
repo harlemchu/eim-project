@@ -27,7 +27,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
             />
             <select
                 value={filterYear || ''}
-                onChange={(e) => onFilterYearChange(e.target.value ? Number(e.target.value) : null)}
+                onChange={(e) => onFilterYearChange?.(e.target.value ? Number(e.target.value) : null)}
                 className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
             >
                 <option value="">All Years</option>
