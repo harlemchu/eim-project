@@ -2,7 +2,7 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage, router } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 
 export default function Authenticated({
@@ -35,7 +35,14 @@ export default function Authenticated({
                                 </NavLink>
                             </div>
                         </div>
-
+                        {user?.is_admin && (
+                            <NavLink
+                                href={route('admin.profiles.index')}
+                                active={route().current('admin.profiles.*')}
+                            >
+                                Admin Panel
+                            </NavLink>
+                        )}
                         <div className="hidden sm:ms-6 sm:flex sm:items-center">
                             <div className="relative ms-3">
                                 <Dropdown>

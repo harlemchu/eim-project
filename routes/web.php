@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\YearbookController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use Illuminate\Support\Facades\Roue;
 use Inertia\Inertia;
 
 // Route::get('/', function () {
@@ -32,4 +32,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/{profile}/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar.upload');
 });
 
+Route::middleware(['auth', 'verified', 'admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::resource('profiles', AdminProfileController::class)->except(['show']);
+    });
 require __DIR__ . '/auth.php';
