@@ -1,42 +1,66 @@
 // resources/js/Components/ProfileCard.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { Profile } from '../types';
 
 interface ProfileCardProps {
     profile: Profile;
 }
 
-// const ProfileCard: React.FC<ProfileCardProps> = ({ profile }) => {
 export default function ProfileCard({ profile }: ProfileCardProps) {
-    const avatarUrl = profile.avatar
+    const [expanded, setExpanded] = useState(false);
+    const [imageError, setImageError] = useState(false);
+    const avatarUrl = profile.avatar && !imageError
         ? `/storage/${profile.avatar}`
-        : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.user?.name || '')}&background=random`;
+        : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.user?.name || '')}&background=10b981&color=fff&size=80`;
+
+    const toggleExpand = () => setExpanded(!expanded);
 
     return (
-        <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition duration-200">
-            <div className="flex items-center space-x-4">
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 p-5 relative">
+            {/* Ribbon for year */}
+            <div className="absolute -top-1 right-6 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-b-lg shadow">
+                {profile.graduation_year}
+            </div>
+
+            <div className="flex items-center gap-4">
                 <img
                     src={avatarUrl}
                     alt={profile.user?.name}
-                    className="w-16 h-16 rounded-full object-cover border-2 border-blue-500"
+                    onError={() => setImageError(true)}
+                    className="w-14 h-14 rounded-full object-cover border-2 border-emerald-200"
                 />
                 <div>
                     <h3 className="text-lg font-semibold text-gray-800">{profile.user?.name}</h3>
-                    <p className="text-sm text-gray-600">{profile.class_name || 'Class of ' + profile.graduation_year}</p>
+                    {profile.class_name && (
+                        <p className="text-sm text-emerald-600">{profile.class_name}</p>
+                    )}
                 </div>
             </div>
+
             {profile.quote && (
-                <blockquote className="mt-2 italic text-gray-700 border-l-4 border-blue-300 pl-3">
-                    "{profile.quote}"
+                <blockquote className="mt-3 text-sm italic text-gray-600 border-l-2 border-emerald-300 pl-3">
+                    “{profile.quote}”
                 </blockquote>
             )}
-            <div className="mt-2 text-sm text-gray-600">
-                {profile.bio || 'No bio yet.'}
+
+            <div className="mt-2">
+                <p className={`text-sm text-gray-600 ${!expanded ? 'line-clamp-2' : ''}`}>
+                    {profile.bio || 'No bio yet.'}
+                </p>
+                {profile.bio && profile.bio.length > 80 && (
+                    <button
+                        onClick={toggleExpand}
+                        className="text-xs text-emerald-600 hover:text-emerald-800 font-medium mt-1"
+                    >
+                        {expanded ? 'Show less' : 'Read more'}
+                    </button>
+                )}
             </div>
+
             {profile.interests && profile.interests.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-1">
                     {profile.interests.map((interest, idx) => (
-                        <span key={idx} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                        <span key={idx} className="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded-full">
                             {interest}
                         </span>
                     ))}
@@ -44,4 +68,4 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
             )}
         </div>
     );
-};
+}
