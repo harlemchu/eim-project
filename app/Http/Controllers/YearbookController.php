@@ -22,7 +22,7 @@ class YearbookController extends Controller
 
         return Inertia::render('Yearbook', [
             'profiles' => $profiles,
-            'search' => $search, // pass to frontend
+            'search' => $search ?? '', // pass to frontend
         ]);
     }
 }

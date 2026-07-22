@@ -3,10 +3,11 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Head } from '@inertiajs/react';
 import { Profile } from '../types';
 import ProfileCard from '../Components/ProfileCard';
+import NavigationComponent from '@/Components/Navigation';
 
 interface YearbookProps {
     profiles: Profile[];
-    search?: string; // <-- Add this
+    search?: string;
 }
 
 export default function Yearbook({ profiles, search = '' }: YearbookProps) {
@@ -60,6 +61,8 @@ export default function Yearbook({ profiles, search = '' }: YearbookProps) {
 
     return (
         <>
+            {/* Add Navigation */}
+            <NavigationComponent />
             <Head title="Yearbook" />
             <div className="min-h-screen bg-gray-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
