@@ -6,10 +6,12 @@ import ProfileCard from '../Components/ProfileCard';
 
 interface YearbookProps {
     profiles: Profile[];
+    search?: string; // <-- Add this
 }
 
-export default function Yearbook({ profiles }: YearbookProps) {
-    const [searchTerm, setSearchTerm] = useState('');
+export default function Yearbook({ profiles, search = '' }: YearbookProps) {
+    const [searchTerm, setSearchTerm] = useState(search); // <-- Use prop
+    // const [searchTerm, setSearchTerm] = useState('');
     const [filterYear, setFilterYear] = useState<number | null>(null);
     const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
