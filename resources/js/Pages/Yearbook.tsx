@@ -49,11 +49,13 @@ export default function Yearbook({ profiles }: YearbookProps) {
                 : [...prev, interest]
         );
     };
-    const [dark, setDark] = useState(() => localStorage.getItem('theme') === 'dark');
-    useEffect(() => {
-        document.documentElement.classList.toggle('dark', dark);
-        localStorage.setItem('theme', dark ? 'dark' : 'light');
-    }, [dark]);
+
+    const yearCounts = useMemo(() => {
+        const counts: Record<number, number> = {};
+        profiles.forEach(p => counts[p.graduation_year] = (counts[p.graduation_year] || 0) + 1);
+        return Object.entries(counts).sort(([a], [b]) => Number(b) - Number(a));
+    }, [profiles]);
+
     return (
         <>
             <Head title="Yearbook" />
@@ -61,9 +63,13 @@ export default function Yearbook({ profiles }: YearbookProps) {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Sidebar */}
+
                         <aside className="lg:w-72 flex-shrink-0">
-                            <div className="bg-white/10 dark:bg-gray-800/30 backdrop-blur-md border border-white/20 rounded-xl shadow-lg p-6">
+
+                            <div className="sticky top-8 space-y-6">
+                                {/* <div className="bg-white/10 dark:bg-gray-800/30 backdrop-blur-md border border-white/20 rounded-xl shadow-lg p-6"> */}
                                 {/* Stats card */}
+
                                 <div className="bg-white rounded-xl shadow-sm p-6">
                                     <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Yearbook Stats</h3>
                                     <dl className="mt-3 space-y-2">
@@ -129,6 +135,20 @@ export default function Yearbook({ profiles }: YearbookProps) {
                                     </div>
                                 )}
 
+                                {/* Year filter */}
+                                <div className="bg-white rounded-xl shadow-sm p-6">
+                                    <div className="space-y-1">
+                                        {yearCounts.map(([year, count]) => (
+                                            <div key={year} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded" onClick={() => setFilterYear(Number(year))}>
+                                                <span className="text-sm w-12">{year}</span>
+                                                <div className="flex-1 h-2 bg-indigo-200 rounded-full">
+                                                    <div className="h-2 bg-indigo-600 rounded-full" style={{ width: `${(count / profiles.length) * 100}%` }} />
+                                                </div>
+                                                <span className="text-xs text-gray-500">{count}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                                 {/* Clear filters button */}
                                 <button
                                     onClick={() => {
