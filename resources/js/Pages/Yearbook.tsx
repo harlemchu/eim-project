@@ -4,6 +4,7 @@ import { Head } from '@inertiajs/react';
 import { Profile } from '../types';
 import ProfileCard from '../Components/ProfileCard';
 import NavigationComponent from '@/Components/Navigation';
+import { useDebounce } from '@/Hooks/useDebounce';
 
 interface YearbookProps {
     profiles: Profile[];
@@ -13,6 +14,8 @@ interface YearbookProps {
 export default function Yearbook({ profiles, search = '' }: YearbookProps) {
     const [searchTerm, setSearchTerm] = useState(search); // <-- Use prop
     // const [searchTerm, setSearchTerm] = useState('');
+    // State for debounced value (updates after delay)
+    const debouncedSearchTerm = useDebounce(searchTerm, 1000);
     const [filterYear, setFilterYear] = useState<number | null>(null);
     const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
@@ -22,11 +25,11 @@ export default function Yearbook({ profiles, search = '' }: YearbookProps) {
         return Array.from(new Set(allYears)).sort((a, b) => b - a);
     }, [profiles]);
 
-    const allInterests = useMemo(() => {
-        const set = new Set<string>();
-        profiles.forEach(p => p.interests?.forEach(i => set.add(i)));
-        return Array.from(set).sort();
-    }, [profiles]);
+    // const allInterests = useMemo(() => {
+    //     const set = new Set<string>();
+    //     profiles.forEach(p => p.interests?.forEach(i => set.add(i)));
+    //     return Array.from(set).sort();
+    // }, [profiles]);
 
     // Filter logic
     const filteredProfiles = useMemo(() => {
@@ -39,7 +42,7 @@ export default function Yearbook({ profiles, search = '' }: YearbookProps) {
                 selectedInterests.some(interest => profile.interests?.includes(interest));
             return matchesSearch && matchesYear && matchesInterests;
         });
-    }, [profiles, searchTerm, filterYear, selectedInterests]);
+    }, [profiles, debouncedSearchTerm, filterYear, selectedInterests]);
 
     // Stats
     const totalAlumni = profiles.length;
@@ -120,7 +123,7 @@ export default function Yearbook({ profiles, search = '' }: YearbookProps) {
                                     </select>
                                 </div>
 
-                                {/* Interests filter */}
+                                {/* Interests filter
                                 {allInterests.length > 0 && (
                                     <div className="bg-white rounded-xl shadow-sm p-6">
                                         <label className="block text-sm font-medium text-gray-700 mb-2">Interests</label>
@@ -138,7 +141,7 @@ export default function Yearbook({ profiles, search = '' }: YearbookProps) {
                                             ))}
                                         </div>
                                     </div>
-                                )}
+                                )} */}
 
                                 {/* Year filter */}
                                 <div className="bg-white rounded-xl shadow-sm p-6">
